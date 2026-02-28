@@ -36,6 +36,7 @@
             height: 512px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             filter: saturate(1.2); /* Slightly increased saturation for visual appeal */
+            margin-bottom: 30px;
       </style>
    </head>
    <body>
@@ -43,40 +44,160 @@
          <div id="chessboard"></div>
          <div class="controls">
             <p id="status">Loading status...</p>
-      </div>
+            <div id="game-info" style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; font-size: 14px;">
+               <p><strong>Current Turn:</strong> <span id="current-turn">White</span></p>
+               <p><strong>Moves Made:</strong> <span id="move-count">0</span></p>
+               <p><strong>Status:</strong> <span id="game-status">Game Started</span></p>
+               <button id="reset-button" style="margin-top: 10px; padding: 8px 16px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">Reset Board</button>
+            </div>
+         </div>
+
+      <!-- Load chess.js library -->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/1.0.0-beta.8/chess.js"></script>
 
       <script type="module">
-         import { initializeChessground } from "/js/chessground-setup.js";
+         import { initializeChessboard } from "/js/chessground-setup.js";
 
-         const chessboardElement = document.getElementById("chessboard");
-         if (chessboardElement) {
-            initializeChessground(chessboardElement);
-         } else {
-            console.error("The 'chessboard' element was not found in the DOM. Chessground cannot be initialized.");
+         let chessboardInstance = null;
+
+         /**
+          * Initialize the chess board with all features enabled
+          */
+         function setupChessboard() {
+            const chessboardElement = document.getElementById("chessboard");
+            if (!chessboardElement) {
+               console.error("❌ The 'chessboard' element was not found in the DOM. Chessground cannot be initialized.");
+               return;
+            }
+
+            try {
+               chessboardInstance = initializeChessboard(chessboardElement);
+               console.log("✅ Chessboard setup completed successfully!");
+               updateGameInfo();
+            } catch (error) {
+               console.error("❌ Failed to initialize chessboard:", error);
+            }
          }
 
-         fetch("/health")
-            .then((response) => response.json())
-            .then((data) => {
-               const statusElement = document.getElementById("status");
-               if (statusElement) {
-                  statusElement.textContent = data.status === "ok" ? "✓ Online" : "✗ Offline";
-                  statusElement.style.color = data.status === "ok" ? "#28a745" : "#dc3545";
+         /**
+          * Update game information display
+          */
+         function updateGameInfo() {
+            if (!chessboardInstance) return;
+
+            const gameStatus = chessboardInstance.getGameStatus();
+            const currentTurnElement = document.getElementById("current-turn");
+            const moveCountElement = document.getElementById("move-count");
+            const gameStatusElement = document.getElementById("game-status");
+
+            if (currentTurnElement) {
+               currentTurnElement.textContent =
+                  gameStatus.currentTurn.charAt(0).toUpperCase() +
+                  gameStatus.currentTurn.slice(1);
+            }
+
+            if (moveCountElement) {
+               moveCountElement.textContent = Math.floor(gameStatus.history.length / 2);
+            }
+
+            if (gameStatusElement) {
+               if (gameStatus.isCheckmate) {
+                  gameStatusElement.textContent = "🏁 Checkmate!";
+                  gameStatusElement.style.color = "#dc3545";
+               } else if (gameStatus.isStalemate) {
+                  gameStatusElement.textContent = "🤝 Stalemate - Draw!";
+                  gameStatusElement.style.color = "#ffc107";
+               } else if (gameStatus.isCheck) {
+                  gameStatusElement.textContent = "⚠️  Check!";
+                  gameStatusElement.style.color = "#dc3545";
                } else {
-                  console.warn("Element with ID 'status' not found. Cannot update health status.");
+                  gameStatusElement.textContent = "Game in Progress";
+                  gameStatusElement.style.color = "#28a745";
                }
-               console.log("Status OK");
-            })
-            .catch((error) => {
-               const statusElement = document.getElementById("status");
-               if (statusElement) {
-                  statusElement.textContent = "✗ Error";
-                  statusElement.style.color = "#dc3545";
-               } else {
-                  console.warn("Element with ID 'status' not found. Cannot update health status on error.");
-               }
-               console.error("Failed to fetch health status:", error);
-            });
+            }
+         }
+
+         /**
+          * Setup reset button functionality
+          */
+         function setupResetButton() {
+            const resetButton = document.getElementById("reset-button");
+            if (resetButton) {
+               resetButton.addEventListener("click", () => {
+                  if (chessboardInstance) {
+                     chessboardInstance.resetBoard();
+                     updateGameInfo();
+                     console.log("♻️  Board has been reset");
+                  }
+               });
+            }
+         }
+
+         /**
+          * Monitor moves and update game info
+          */
+         function setupMoveMonitoring() {
+            if (!chessboardInstance) return;
+
+            // Store the original after function
+            const originalDests = chessboardInstance.ground.state.movable.events.after;
+
+            // Wrap it to also update game info
+            chessboardInstance.ground.state.movable.events.after = function(
+               fromSquare,
+               toSquare,
+               metadata
+            ) {
+               originalDests.call(this, fromSquare, toSquare, metadata);
+               updateGameInfo();
+            };
+         }
+
+         /**
+          * Check server health status
+          */
+         function checkServerHealth() {
+            fetch("/health")
+               .then((response) => response.json())
+               .then((data) => {
+                  const statusElement = document.getElementById("status");
+                  if (statusElement) {
+                     statusElement.textContent =
+                        data.status === "ok" ? "✓ Server Online" : "✗ Server Offline";
+                     statusElement.style.color =
+                        data.status === "ok" ? "#28a745" : "#dc3545";
+                  }
+                  console.log("✅ Server health check passed");
+               })
+               .catch((error) => {
+                  const statusElement = document.getElementById("status");
+                  if (statusElement) {
+                     statusElement.textContent = "✗ Server Error";
+                     statusElement.style.color = "#dc3545";
+                  }
+                  console.error("❌ Failed to fetch health status:", error);
+               });
+         }
+
+         /**
+          * Initialize everything on page load
+          */
+         document.addEventListener("DOMContentLoaded", () => {
+            setupChessboard();
+            setupResetButton();
+            setupMoveMonitoring();
+            checkServerHealth();
+         });
+
+         // Also run setup immediately in case DOMContentLoaded already fired
+         if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", setupChessboard);
+         } else {
+            setupChessboard();
+            setupResetButton();
+            setupMoveMonitoring();
+            checkServerHealth();
+         }
       </script>
    </body>
 </html>
