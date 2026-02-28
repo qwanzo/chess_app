@@ -53,12 +53,8 @@ import { Chessground } from "/js/chessground.min.js"; // Attempt to import chess
  * @returns {Object} A Chess instance from chess.js
  */
 function createChessEngine() {
-   // Dynamically import chess.js
-   // Note: In production, you may want to load this as a module
-   // Ensure Chess is available globally or imported correctly
-   if (typeof Chess === "undefined") {
-      throw new Error("chess.js library not found or not loaded globally.");
-   }
+   // We've now imported Chess as an ES module at the top of this file.
+   // This function simply returns a new instance of the Chess engine.
    return new Chess();
 }
 
