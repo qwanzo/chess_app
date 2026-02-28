@@ -44,7 +44,7 @@ function createChessEngine() {
  * in the initializeChessboard() function. See detailed instructions below for each feature.
  */
 
-import { Chessground } from "/js/chessground.min.js"; // Attempt to import chess.js as an ES module
+import { Chessground } from "/public/js/chessground.min.js"; // Attempt to import chess.js as an ES module
 
 /**
  * Creates a Chess instance for move validation and game state management.
