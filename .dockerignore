@@ -1,0 +1,32 @@
+chess_app/.dockerignore
+# Node modules (will be installed in container)
+node_modules
+
+# Dependency lock files (optional, keep if you want reproducible builds)
+*.log
+
+# OS/IDE files
+.DS_Store
+*.swp
+*.swo
+*.tmp
+
+# Documentation and guides
+CHESS_FEATURES_GUIDE.md
+IMPLEMENTATION_SUMMARY.md
+QUICK_REFERENCE.md
+SETUP_AND_CONFIG.md
+
+# Git and VCS
+.git
+.gitignore
+
+# Test and coverage output
+coverage
+*.test.js
+*.spec.js
+
+# Misc
+npm-debug.log
+yarn-error.log
+.env
