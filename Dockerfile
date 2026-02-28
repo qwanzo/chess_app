@@ -1,8 +1,7 @@
-
-# Chess App – Production Dockerfile for Koyeb
+# Chess App – Production Dockerfile for Koyeb & Hugging Face Spaces
 
 # Use official Node.js LTS image for security and stability
-FROM node:20-alpine AS builder
+FROM node:20-alpine
 
 # Set working directory
 WORKDIR /app
@@ -15,16 +14,17 @@ RUN npm ci --production
 COPY src/ ./src/
 COPY public/ ./public/
 
-# Expose port (Koyeb will route traffic to this port)
+# Expose port (Hugging Face Spaces and Koyeb will route traffic to this port)
+EXPOSE 7860
 EXPOSE 5500
 
 # Set environment variables for production
 ENV NODE_ENV=production
-ENV PORT=5500
 
-# Healthcheck for Koyeb (optional, but recommended)
+# Healthcheck (optional)
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:5500/health || exit 1
+  CMD wget --no-verbose --tries=1 --spider http://localhost:${PORT:-7860}/health || exit 1
 
-# Start the server
-CMD ["node", "src/index.js"]
+# Start the server (listen on 0.0.0.0 for Hugging Face Spaces compatibility)
+ENV HOST=0.0.0.0
+CMD [ "node", "src/index.js" ]
