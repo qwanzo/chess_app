@@ -1,9 +1,13 @@
-import { DrawShape } from './draw';
+import { DrawShape } from "./draw";
 export interface SyncableShape {
-    shape: DrawShape;
-    current: boolean;
-    pendingErase: boolean;
-    hash: Hash;
+   shape: DrawShape;
+   current: boolean;
+   pendingErase: boolean;
+   hash: Hash;
 }
 export type Hash = string;
-export declare function syncShapes(shapes: SyncableShape[], root: HTMLElement | SVGElement, renderShape: (shape: SyncableShape) => HTMLElement | SVGElement): void;
+export declare function syncShapes(
+   shapes: SyncableShape[],
+   root: HTMLElement | SVGElement,
+   renderShape: (shape: SyncableShape) => HTMLElement | SVGElement,
+): void;

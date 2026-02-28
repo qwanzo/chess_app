@@ -1,23 +1,50 @@
+/* All features can be easily enabled/disabled by modifying the configuration object
+ * in the initializeChessboard() function. See detailed instructions below for each feature.
+ */
+import { Chess } from "./chess.js"; // Import Chess as a named export from the local file path
+
 /**
- * @fileoverview Chessground Chess Board Setup with Chess.js Integration
- *
- * This module initializes a fully-featured chess board using Chessground with chess.js
- * for proper move validation. It provides:
- *
- * 1. LEGAL MOVE VALIDATION - Only valid chess moves are allowed
- * 2. SELF-CAPTURE PREVENTION - Cannot capture your own pieces
- * 3. POSSIBLE MOVE HIGHLIGHTS - Visual indicators for valid moves when a piece is selected
- * 4. TURN-BASED PLAY - Only the current player's pieces can be moved
- * 5. CHECK/CHECKMATE DETECTION - Automatically detects and highlights check
- * 6. MOVE HISTORY TRACKING - Keeps track of all moves made
- *
- * FEATURE TOGGLE GUIDE:
+  * Creates a Chess instance for move validation and game state management.
+@@ -31,7 +32,11 @@
+ function createChessEngine() {
+    // Dynamically import chess.js
+    // Note: In production, you may want to load this as a module
+-   // Ensure Chess is available globally or imported correctly
+-   if (typeof Chess === "undefined") {
+-      throw new Error("chess.js library not found or not loaded globally.");
+-   }
+-   return new Chess();
++   // We've now imported it directly, so we expect it to be available.
++   // The previous error was due to incorrect module resolution.
++   // If this still fails, it might indicate an issue with the import path or
++   // the structure of the chess.js module itself.
++   // For now, we assume the import works and create a new instance.
++   return new Chess();
+ }
+
+ /**
+=======
+function createChessEngine() {
+   // Dynamically import chess.js
+   // Note: In production, you may want to load this as a module
+-  // Ensure Chess is available globally or imported correctly
+-  if (typeof Chess === "undefined") {
+-    throw new Error("chess.js library not found or not loaded globally.");
+-  }
+-  return new Chess();
++  // We've now imported it directly, so we expect it to be available.
++  // The previous error was due to incorrect module resolution.
++  // For now, we assume the import works and create a new instance.
++  return new Chess();
+ }
+
+ /**
  * =====================
  * All features can be easily enabled/disabled by modifying the configuration object
  * in the initializeChessboard() function. See detailed instructions below for each feature.
  */
 
-import { Chessground } from "/js/chessground.min.js";
+import { Chessground } from "/js/chessground.min.js"; // Attempt to import chess.js as an ES module
 
 /**
  * Creates a Chess instance for move validation and game state management.
@@ -28,7 +55,11 @@ import { Chessground } from "/js/chessground.min.js";
 function createChessEngine() {
    // Dynamically import chess.js
    // Note: In production, you may want to load this as a module
-   return new window.Chess();
+   // Ensure Chess is available globally or imported correctly
+   if (typeof Chess === "undefined") {
+      throw new Error("chess.js library not found or not loaded globally.");
+   }
+   return new Chess();
 }
 
 /**
