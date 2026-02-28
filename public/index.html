@@ -83,7 +83,7 @@
          </div>
 
          <!-- Load chess.js library from CDN for global access -->
-         <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/1.0.0-beta.8/chess.js"></script>
+         <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.1/chess.js"></script>
 
          <!-- Then import our setup script -->
          <script type="module">
@@ -104,8 +104,18 @@
                }
 
                try {
-                  // Ensure Chess is available globally before initializing
-                  if (typeof Chess === "undefined") {
+                  // Robust check for chess.js availability
+                  const chessGlobal =
+                     typeof window !== "undefined" &&
+                     typeof window.Chess === "function"
+                        ? window.Chess
+                        : typeof Chess === "function"
+                          ? Chess
+                          : undefined;
+
+                  if (!chessGlobal) {
+                     chessboardElement.innerHTML =
+                        "<p style='color:red; padding:20px;'>Error: chess.js library is not loaded or available globally.<br>Check your network connection and script tags.<br>If CDN fails, download chess.js and serve it locally.</p>";
                      console.error(
                         "❌ chess.js library is not loaded or available globally.",
                      );
@@ -115,6 +125,10 @@
                   console.log("✅ Chessboard setup completed successfully!");
                   updateGameInfo();
                } catch (error) {
+                  chessboardElement.innerHTML =
+                     "<p style='color:red; padding:20px;'>Error: Failed to initialize chessboard.<br>" +
+                     error +
+                     "</p>";
                   console.error("❌ Failed to initialize chessboard:", error);
                }
             }
