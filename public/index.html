@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Chess App</title>
+
+      <link rel="stylesheet" href="/css/chessground.base.css" />
+      <link rel="stylesheet" href="/css/chessground.brown.css" />
+      <link rel="stylesheet" href="/css/chessground.cburnett.css" />
+
+      <style>
+         * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+         }
+
+         body {
+
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+         }
+
+         .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            text-align: center;
+         }
+         #chessboard {
+            width: 512px;
+            height: 512px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      </style>
+   </head>
+   <body>
+      <div class="container">
+         <div id="chessboard"></div>
+         <div class="controls">
+      </div>
+
+      <script type="module">
+         import { Chessground } from "/js/chessground.min.js";
+         const ground = Chessground(document.getElementById("chessboard"), {
+            fen: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR",
+            movable: {
+               free: true,
+               color: "both",
+            },
+            draggable: {
+               enabled: true,
+               showGhost: true,
+            },
+            selectable: {
+               enabled: true,
+            },
+            highlight: {
+               lastMove: true,
+               check: true,
+            },
+         });
+
+
+         fetch("/health")
+            .then((response) => response.json())
+            .then((data) => {
+               document.getElementById("status").textContent =
+                  data.status === "ok" ? "✓ Online" : "✗ Offline";
+               document.getElementById("status").style.color =
+                  data.status === "ok" ? "#28a745" : "#dc3545";
+                  console.log("Status OK")
+            })
+            .catch((error) => {
+               document.getElementById("status").textContent = "✗ Error";
+               document.getElementById("status").style.color = "#dc3545";
+            });
+      </script>
+   </body>
+</html>

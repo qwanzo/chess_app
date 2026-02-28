@@ -1,0 +1,20 @@
+{
+  "name": "chess_app",
+  "version": "1.0.0",
+  "description": "Chess App Made By Pansilu Using Lichess/Chessground",
+  "keywords": [
+    "chess_app"
+  ],
+  "license": "MIT",
+  "author": "Pansilu Chethiya, Lichess organisation",
+  "type": "commonjs",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "@lichess-org/chessground": "^10.0.2",
+    "express": "^4.18.2"
+  }
+}
