@@ -2,6 +2,7 @@
 <html lang="en">
    <head>
       <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <meta
          name="viewport"
          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
@@ -13,34 +14,21 @@
       <link rel="stylesheet" href="/css/chessground.brown.css" />
       <link rel="stylesheet" href="/css/chessground.cburnett.css" />
       <style>
-         html,
-         body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-         }
          body {
             min-height: 100vh;
-            min-height: 100dvh;
-            width: 100vw;
-            height: 100vh;
-            overflow: auto;
             display: flex;
             justify-content: center;
             align-items: center;
             background: #f5f5f5;
-            font-family: "Segoe UI", "Arial", sans-serif;
          }
          .container {
             background: white;
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             max-width: 600px;
-            width: 98vw;
+            width: 90vw;
             text-align: center;
-            padding: 4vw 2vw;
-            box-sizing: border-box;
+            padding: 16px;
          }
          #chessboard {
             width: 100%;
@@ -50,18 +38,14 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             filter: saturate(1.2);
             touch-action: manipulation;
-            min-width: 220px;
-            min-height: 220px;
          }
          @media (max-width: 600px) {
             #chessboard {
                max-width: 98vw;
-               min-width: 120px;
-               min-height: 120px;
             }
             .container {
                max-width: 98vw;
-               padding: 6vw 2vw;
+               padding: 4vw;
             }
          }
          button,
@@ -72,41 +56,12 @@
             padding: 8px 16px;
             border-radius: 4px;
             cursor: pointer;
-            box-sizing: border-box;
-         }
-         .controls,
-         #game-info {
-            width: 100%;
-            box-sizing: border-box;
-         }
-         #game-info {
-            margin-top: 20px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            font-size: 14px;
-         }
-         @media (max-width: 500px) {
-            #game-info {
-               font-size: 13px;
-               padding: 8px;
-            }
-            button,
-            #reset-button {
-               font-size: 0.95rem;
-               padding: 10px 12px;
-            }
          }
       </style>
    </head>
    <body>
       <div class="container">
-         <div
-            id="chessboard"
-            role="region"
-            aria-label="Chess board"
-            tabindex="0"
-         ></div>
+         <div id="chessboard" role="region" aria-label="Chess board"></div>
          <div class="controls">
             <p id="status">Loading status...</p>
             <div
@@ -130,11 +85,7 @@
                   <strong>Status:</strong>
                   <span id="game-status">Game Started</span>
                </p>
-               <button
-                  id="reset-button"
-                  aria-label="Reset chessboard"
-                  tabindex="0"
-               >
+               <button id="reset-button" aria-label="Reset chessboard">
                   Reset Board
                </button>
             </div>
