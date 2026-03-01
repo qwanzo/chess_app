@@ -5,7 +5,7 @@ const app = express();
 const PORT = process.env.PORT || 5500;
 
 // Serve static files from the public directory
-app.use(express.static(path.join(__dirname, "..", "docs")));
+app.use(express.static(path.join(__dirname, "..", "public")));
 
 // Parse JSON bodies
 app.use(express.json());
@@ -13,7 +13,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Root route
 app.get("/", (req, res) => {
-   res.sendFile(path.join(__dirname, "..", "docs", "index.html"));
+   res.sendFile(path.join(__dirname, "..", "public", "index.html"));
 });
 
 // Health check endpoint
